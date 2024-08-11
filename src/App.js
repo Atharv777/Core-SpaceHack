@@ -1,94 +1,55 @@
-import React from 'react';
-import ReactApexChart from "react-apexcharts";
+import React, { useState, useEffect } from 'react';
+
+import { BrowserRouter, Routes, Route, redirect } from "react-router-dom";
+import Login from './Login';
+import Dashboard from './Dashboard';
 
 export default function App() {
+
+    const [auth, setAuth] = useState(false)
+
+    useEffect(() => {
+        if (localStorage.getItem("loggedIn") === "true") {
+            setAuth(true)
+        }
+        else {
+            setAuth(false)
+        }
+    }, [])
+
+
     return (
         <div className='min-h-screen bg-[#F9F4EF]'>
-            <div className='flex flex-row justify-betweem'>
-            <div className='flex flex-col gap-10 max-w-[50 items-center0px] mx-auto'>
-                <div className='flex flex-col gap-2 items-center'>
-                    <p className='text-[#333333] font-light text-base font-["Urbanist"] tracking-[1.08em]'>ASTROBOOM</p>
-                    <h2 className='text-[#333333] font-semibold text-6xl font-["Urbanist"]'>Sign In</h2>
-                </div>
-            
-                <div className='flex flex-col gap-4 w-full'>
-                    <div className='flex flex-col gap-2 w-full'>
-                        <p className='text-[#333333] font-semibold text-base font-["Urbanist"]'>Full Name</p>
-                        <input type="text" className=' bg-[#fff0f0] border border-[#3333337f] rounded-lg focus:outline-none w-full px-3 py-2' />
-                    </div>
-                
-                    <div className='flex flex-col gap-2 w-full'>
-                        <p className='text-[#333333] font-semibold text-base font-["Urbanist"]'>SpaceShip ID</p>
-                        <input type="email" className=' bg-[#fff0f0] border border-[#3333337f] rounded-lg focus:outline-none w-full px-3 py-2' />
-                    </div>
-                
-                    <div className='flex flex-col gap-2 w-nh'>
-                        <p className='text-[#333333] font-semibold text-base font-["Urbanist"]'>Password</p>
-                        <input type="password" className=' bg-[#fff0f0] border border-[#3333337f] rounded-lg focus:outline-none w-full px-3 py-2' />
-                    </div>
-        
-                </div>
-            </div>
-                <img src="illus.svg" alt="" />
-            </div>
 
-
-            {/* <ReactApexChart options={{
-              chart: {
-                height: 350,
-                type: 'radar',
-              },
-              dataLabels: {
-                enabled: true
-              },
-              plotOptions: {
-                radar: {
-                  size: 140,
-                  polygons: {
-                    strokeColors: '#cbcbcb',
-                    fill: {
-                      colors: ['#ebebeb', '#fbfbfb']
-                    }
-                  }
-                }
-              },
-              colors: ['#FC7841'],
-              markers: {
-                size: 2,
-                colors: ['#fff'],
-                strokeColor: '#FC7841',
-                strokeWidth: 1,
-              },
-              tooltip: {
-                y: {
-                  formatter: function(val) {
-                    return val
-                  }
-                }
-              },
-              xaxis: {
-                categories: ['Debri 1', 'Debri 2', 'Debri 3', 'Debri 4', 'Debri 5', 'Debri 6']
-              },
-              yaxis: {
-                labels: {
-                  formatter: function(val, i) {
-                    return ""
-                  }
-                }
-              }
-            }} 
-            series={[{
-              name: 'Series 1',
-              data: [20, 90, 40, 5, 50, 30],
-            }]} 
-            type="radar" 
-            height={350} /> */}
-
-
-
-
+            <BrowserRouter basename="/">
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Dashboard auth={auth} setAuth={setAuth} Loading={Loading} />}
+                        loader={() => {
+                            if (!auth) { return redirect("/login"); }
+                            return null;
+                        }}
+                    />
+                    <Route
+                        path="/login"
+                        element={<Login auth={auth} setAuth={setAuth} Loading={Loading} />}
+                        loader={() => {
+                            if (!auth) { return redirect("/login"); }
+                            return null;
+                        }}
+                    />
+                </Routes>
+            </BrowserRouter>
 
         </div>
     )
 }
-// font-family: 'Urbanist';
+const Loading = () => {
+    return (
+        <svg aria-hidden="true" role="status" className="inline w-5 h-5 text-[#181818] animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#6b7f93" />
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor" />
+        </svg>
+    )
+}
