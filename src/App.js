@@ -19,7 +19,7 @@ export default function App() {
 
 
     return (
-        <div className='min-h-screen bg-[#F9F4EF]'>
+        <div className='min-h-screen bg-[#0d0d0f]'>
 
             <BrowserRouter basename="/">
                 <Routes>
